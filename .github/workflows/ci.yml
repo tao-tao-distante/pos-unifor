@@ -34,3 +34,4 @@ jobs:
       # Passo 4: Roda os testes automatizados do seu projeto
       - name: Executar testes
         run: npm test -- --coverage
+        continue-on-error: false
