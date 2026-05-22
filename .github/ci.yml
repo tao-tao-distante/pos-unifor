@@ -1,0 +1,36 @@
+# O nome que vai aparecer na aba "Actions" do seu GitHub
+name: Integração Contínua (CI)
+
+# Define o que vai disparar a automação
+on:
+  push:
+    branches: [ "main", "develop" ] # Roda sempre que houver um push nessas branches
+  pull_request:
+    branches: [ "main" ]            # Roda sempre que um PR for aberto para a main
+
+# O que a automação de fato vai fazer
+jobs:
+  testar-projeto:
+    # O sistema operacional da máquina virtual que o GitHub vai rodar
+    runs-on: ubuntu-latest
+
+    steps:
+      # Passo 1: Baixa o código do seu repositório para dentro da máquina virtual
+      - name: Clonar o repositório
+        uses: actions/checkout@v4
+
+      # Passo 2: Instala o Node.js na máquina virtual
+      - name: Configurar o Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Define a versão do Node que seu projeto usa
+          cache: 'npm'       # Ativa o cache para acelerar as próximas execuções
+
+      # Passo 3: Instala as dependências do seu projeto
+      # O 'npm ci' é mais rápido e seguro para ambientes de CI do que o 'npm install'
+      - name: Instalar dependências
+        run: npm ci
+
+      # Passo 4: Roda os testes automatizados do seu projeto
+      - name: Executar testes
+        run: npm test
