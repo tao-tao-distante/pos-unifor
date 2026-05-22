@@ -1,11 +1,12 @@
 const request = require('supertest');
 const axios = require('axios');
-const app = require('../src/app'); // Caminho corrigido apontando para src/app
+const { createApp } = require('../src/app');
 
 // Mockando o axios para não fazer requisições reais à internet
 jest.mock('axios');
 
 describe('Testes da API de Pedidos', () => {
+    let app;
 
     // Silencia o console.error no terminal durante os testes de erro esperados
     beforeAll(() => {
@@ -19,6 +20,7 @@ describe('Testes da API de Pedidos', () => {
     // Limpa os mocks antes de cada teste para evitar interferência
     beforeEach(() => {
         jest.clearAllMocks();
+        app = createApp();
     });
 
     describe('GET /pedidos', () => {
@@ -67,6 +69,10 @@ describe('Testes da API de Pedidos', () => {
         });
 
         it('Deve retornar 404 se o usuário não existir', async () => {
+            axios.get.mockResolvedValue({
+                data: { uf: 'SP' }
+            });
+
             const response = await request(app)
                 .post('/pedidos')
                 .send({ usuarioId: 999, valorTotal: 100, cepDestino: '01001000' });
@@ -146,6 +152,23 @@ describe('Testes da API de Pedidos', () => {
 
             expect(response.status).toBe(500);
             expect(response.body).toEqual({ erro: "Erro ao calcular frete externo" });
+        });
+
+        it('Deve impedir pedidos concorrentes de gastar o mesmo saldo', async () => {
+            axios.get.mockResolvedValue({
+                data: { uf: 'RJ' }
+            });
+
+            const pedido = { usuarioId: 2, valorTotal: 20, cepDestino: '20000000' };
+
+            const responses = await Promise.all([
+                request(app).post('/pedidos').send(pedido),
+                request(app).post('/pedidos').send(pedido),
+            ]);
+            const statuses = responses.map(response => response.status).sort();
+
+            expect(statuses).toEqual([201, 400]);
+            expect(responses.some(response => response.body.erro === "Saldo insuficiente")).toBe(true);
         });
     });
 });

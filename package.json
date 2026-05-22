@@ -8,7 +8,7 @@
     "supertest": "^7.2.2"
   },
   "scripts": {
-    "start": "node server.js",
+    "start": "node src/index.js",
     "test": "jest --runInBand"
   }
 }
