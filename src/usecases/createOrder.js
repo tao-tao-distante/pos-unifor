@@ -43,20 +43,20 @@ const createCreateOrderUseCase = ({ userRepository, orderRepository, freightServ
     return { status: 400, body: { erro: "Dados inválidos: usuarioId, valorTotal e cepDestino são obrigatórios" } };
   }
 
+  const usuario = userRepository.findById(usuarioId);
+  if (!usuario) {
+    return { status: 404, body: { erro: "Usuário não encontrado" } };
+  }
+
+  let valorFinal = calculateFinalOrderValue(valorTotal, usuario.tipo);
+
+  try {
+    valorFinal += await freightService.getFreightCost(cepDestino);
+  } catch (error) {
+    return { status: 500, body: { erro: error.message } };
+  }
+
   return userLock.run(usuarioId, async () => {
-    const usuario = userRepository.findById(usuarioId);
-    if (!usuario) {
-      return { status: 404, body: { erro: "Usuário não encontrado" } };
-    }
-
-    let valorFinal = calculateFinalOrderValue(valorTotal, usuario.tipo);
-
-    try {
-      valorFinal += await freightService.getFreightCost(cepDestino);
-    } catch (error) {
-      return { status: 500, body: { erro: error.message } };
-    }
-
     if (usuario.saldo < valorFinal) {
       return { status: 400, body: { erro: "Saldo insuficiente" } };
     }
