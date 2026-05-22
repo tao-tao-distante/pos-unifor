@@ -1,14 +1,16 @@
 const request = require('supertest');
 const axios = require('axios');
-const app = require('../src/app.js');
+const { createApp } = require('../src/app.js');
 
 jest.mock('axios');
 
 describe('Testes de Integração - Endpoints de Pedidos', () => {
+    let app;
 
     // Limpa os mocks antes de cada teste para evitar interferências
     beforeEach(() => {
         jest.clearAllMocks();
+        app = createApp();
     });
 
     describe('GET /pedidos', () => {
@@ -91,6 +93,10 @@ describe('Testes de Integração - Endpoints de Pedidos', () => {
         });
 
         it('deve retornar 404 se o usuário não existir', async () => {
+            axios.get.mockResolvedValue({
+                data: { uf: 'SP' }
+            });
+
             const response = await request(app)
                 .post('/pedidos')
                 .send({
