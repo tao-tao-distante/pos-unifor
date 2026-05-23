@@ -1,3 +1,5 @@
+[![codecov](https://codecov.io/gh/tao-tao-distante/pos-unifor/branch/main/graph/badge.svg)](https://codecov.io/gh/tao-tao-distante/pos-unifor)
+
 # API Express
 
 ### Como rodar
@@ -26,4 +28,3 @@ Pronto, API rodando em <http://localhost:3000>
 }
 ```
 
-[![codecov](https://codecov.io/gh/tao-tao-distante/pos-unifor/branch/main/graph/badge.svg)](https://codecov.io/gh/tao-tao-distante/pos-unifor)
