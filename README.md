@@ -25,3 +25,5 @@ Pronto, API rodando em <http://localhost:3000>
     "cepDestino": "60352590"
 }
 ```
+
+[![codecov](https://codecov.io/gh/tao-tao-distante/pos-unifor/branch/main/graph/badge.svg)](https://codecov.io/gh/tao-tao-distante/pos-unifor)
