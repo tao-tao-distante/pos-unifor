@@ -10,6 +10,7 @@ const SAO_PAULO_FREIGHT = 5;
 const CEARA_FREIGHT = 40;
 const SAO_PAULO_UF = "SP";
 const CEARA_UF = "CE";
+const BAHIA_UF = "BH";
 
 const VIACEP_API_URL = "https://viacep.com.br/ws";
 
